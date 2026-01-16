@@ -1,4 +1,4 @@
-# 📋 TaskFlow Pro - Full Stack Kanban App
+# 📋 TaskFlow - Full Stack Kanban App
 
 TaskFlow Pro es una aplicación de gestión de tareas estilo Kanban (similar a Trello) construida con tecnologías modernas. Permite a los usuarios registrarse, crear tableros personales y gestionar tareas mediante una interfaz interactiva de arrastrar y soltar (Drag & Drop).
 
