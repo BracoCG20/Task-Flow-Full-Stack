@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String  
+  name     String?
+  role     String  @default("USER")
+  comments Comment[]
+  boards   Board[]
+  activities ActivityLog[]
+}
+
+model Board {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now())
+  
+  // Relación OBLIGATORIA (quitamos el '?')
+  ownerId   Int      
+  owner     User     @relation(fields: [ownerId], references: [id])
+  
+  columns   Column[]
+}
+
+// Column y Task quedan igual...
+model Column {
+  id      Int    @id @default(autoincrement())
+  title   String
+  order   Int    @default(0)
+  boardId Int
+  board   Board  @relation(fields: [boardId], references: [id])
+  tasks   Task[]
+}
+
+model Task {
+  id        Int      @id @default(autoincrement())
+  content   String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  priority  String  @default("low")
+  dueDate   DateTime?
+  tags      Tag[] @relation("TaskTags")
+  subtasks  Subtask[]
+  columnId  Int
+  column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  activities ActivityLog[]
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  action    String   // Ej: "Movió la tarea a Done"
+  createdAt DateTime @default(now())
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subtask {
+  id          Int     @id @default(autoincrement())
+  content     String
+  isCompleted Boolean @default(false)
+  taskId      Int
+  task        Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Tag{
+  id    Int    @id @default(autoincrement())
+  name  String 
+  color String
+  tasks Task[] @relation("TaskTags")
+}

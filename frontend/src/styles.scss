@@ -1,0 +1,863 @@
+/* Variables SASS */
+$primary-color: #4a90e2;
+$bg-color: #f4f5f7;
+$column-bg: #ebecf0;
+$card-bg: #ffffff;
+$text-color: #172b4d;
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: $bg-color;
+  color: $text-color;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    darken($primary-color, 20%)
+  );
+
+  .auth-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 300px;
+    text-align: center;
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+
+      &:hover {
+        background: darken($primary-color, 10%);
+      }
+    }
+  }
+}
+
+.app-container {
+  padding: 20px;
+  background-color: #f4f5f7;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap; // Para que se adapte en pantallas pequeñas
+    gap: 15px;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: $text-color;
+      }
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+
+      input,
+      select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+        }
+      }
+
+      input {
+        width: 200px;
+      } // Ancho del buscador
+
+      button {
+        background: #ff4757;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+
+        &:hover {
+          background: darken(#ff4757, 10%);
+        }
+      }
+    }
+  }
+
+  .board-columns {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; // Scroll horizontal para el tablero completo
+    justify-content: center;
+    align-items: flex-start;
+    height: calc(100vh - 110px); // Altura fija para que el scroll sea interno
+    padding-bottom: 10px;
+
+    // Estilo de cada columna
+    .column {
+      // --- SOLUCIÓN 1: ANCHO FIJO ---
+      min-width: 320px;
+      max-width: 320px;
+      // -----------------------------
+      background: $column-bg;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%; // Para que respete la altura del padre
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 600;
+      }
+
+      // Contenedor interno con scroll para las tarjetas
+      .droppable-container {
+        overflow-y: auto; // Scroll vertical SI ES NECESARIO
+        flex: 1;
+        padding-right: 4px; // Espacio para el scrollbar
+
+        // Scrollbar personalizado (Chrome/Safari)
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #ccc;
+          border-radius: 4px;
+        }
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+      }
+
+      // Estilo de la Tarjeta
+      .task-card {
+        width: 100%; // Ocupa el ancho de la columna
+        box-sizing: border-box;
+        background: $card-bg;
+        padding: 14px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-left: 5px solid #ccc; // Borde de prioridad más grueso
+
+        &:hover {
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+          transform: translateY(-2px);
+        }
+
+        // --- SOLUCIÓN 2: TEXTO LARGO HACIA ABAJO ---
+        .task-content-view {
+          white-space: pre-wrap; // Respeta saltos de línea del usuario
+          word-break: break-word; // Rompe palabras largas si no caben
+          overflow-wrap: break-word; // Mayor compatibilidad
+          font-size: 15px;
+          line-height: 1.5;
+          color: $text-color;
+        }
+
+        // Pie de la tarjeta (Fecha y Borrar)
+        .task-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 12px;
+          color: #888;
+          margin-top: 4px;
+
+          .task-date {
+            background: #f0f2f5;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          }
+
+          .delete-btn {
+            opacity: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 6px;
+
+            &:hover {
+              background: #fee2e2;
+              color: #ef4444;
+              transform: scale(1.1);
+            }
+          }
+        }
+
+        &:hover .delete-btn {
+          opacity: 1;
+        }
+
+        // --- MODO EDICIÓN MEJORADO ---
+        .edit-mode-container {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+
+          // El textarea que se auto-ajusta
+          .edit-textarea {
+            box-sizing: border-box;
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.5;
+            resize: none; // Quitamos el resize manual del usuario
+            background: #f9fafb;
+            transition: border-color 0.2s, background 0.2s;
+            overflow: hidden; // --- SOLUCIÓN 3: OCULTAR SCROLLBAR ---
+            min-height: 80px;
+
+            &:focus {
+              border-color: $primary-color;
+              background: white;
+              box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
+            }
+          }
+
+          // Contador de palabras
+          .word-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #888;
+            margin-top: -6px;
+            font-weight: 500;
+
+            // Estilo cuando se excede el límite
+            &.limit-exceeded {
+              color: #e74c3c;
+              font-weight: 700;
+            }
+          }
+
+          // Fila de controles (Prioridad y Fecha)
+          .edit-controls-row {
+            display: flex;
+            gap: 12px;
+
+            .edit-select,
+            .edit-date {
+              flex: 1;
+              padding: 10px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              font-size: 14px;
+              outline: none;
+              cursor: pointer;
+              background: white;
+              transition: border-color 0.2s;
+              appearance: none; // Para estilizar selects en Safari/Chrome
+
+              &:focus {
+                border-color: $primary-color;
+              }
+            }
+
+            // Icono custom para el select (opcional)
+            .edit-select {
+              background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+              background-repeat: no-repeat;
+              background-position: right 10px center;
+              background-size: 16px;
+              padding-right: 30px;
+            }
+          }
+
+          // Botón de guardar
+          .save-btn {
+            background-color: $primary-color;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, opacity 0.2s;
+
+            &:hover {
+              background-color: darken($primary-color, 8%);
+            }
+
+            // --- SOLUCIÓN 4: BOTÓN DESHABILITADO ---
+            &:disabled {
+              background-color: #ccc;
+              cursor: not-allowed;
+              opacity: 0.7;
+              &:hover {
+                background-color: #ccc;
+              }
+            }
+          }
+        }
+      }
+
+      // Botón añadir tarea al final de la columna
+      .add-task-btn {
+        width: 100%;
+        margin-top: 12px;
+        cursor: pointer;
+        padding: 10px;
+        background: transparent;
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        color: #666;
+        font-weight: 600;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: $primary-color;
+          color: $primary-color;
+          background: rgba($primary-color, 0.05);
+        }
+      }
+    }
+  }
+}
+
+// --- SKELETON LOADING (Efecto de carga) ---
+
+// 1. La animación del brillo pasando
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+// 2. Clase base para cualquier bloque "esqueleto"
+.skeleton {
+  background-color: #eee;
+  background-image: linear-gradient(
+    90deg,
+    #eee,
+    #f5f5f5,
+    // Color más claro en el medio (el brillo)
+    #eee
+  );
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+}
+
+// 3. Estructura del tablero esqueleto (imita al real)
+.skeleton-board {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+
+  .skeleton-column {
+    min-width: 320px;
+    max-width: 320px;
+    background: #ebecf0; // Mismo color que tus columnas reales
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    // Header falso
+    .skeleton-header {
+      height: 24px;
+      width: 60%;
+      @extend .skeleton; // Usa la animación
+    }
+
+    // Tarjetas falsas
+    .skeleton-card {
+      height: 80px;
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+      // Líneas de texto falsas dentro de la tarjeta
+      .line {
+        height: 12px;
+        margin-bottom: 8px;
+        @extend .skeleton;
+
+        &:first-child {
+          width: 90%;
+        }
+        &:last-child {
+          width: 40%;
+        }
+      }
+    }
+  }
+}
+
+// --- LAYOUT ADMIN ---
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+
+  // Barra Lateral
+  .admin-sidebar {
+    width: 280px;
+    background: #fff;
+    color: #010101;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+
+    .sidebar-header {
+      padding: 20px;
+      background: #fbfdff;
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+    }
+
+    .user-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+
+      .user-item {
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        &.active {
+          background: #2b2b2b;
+          color: #fff;
+        }
+
+        .user-info {
+          display: flex;
+          flex-direction: column;
+          font-size: 14px;
+          span.role {
+            font-size: 10px;
+            opacity: 0.7;
+            text-transform: uppercase;
+          }
+        }
+
+        .delete-user-btn {
+          opacity: 0;
+          color: #ff7675;
+          cursor: pointer;
+          &:hover {
+            transform: scale(1.2);
+          }
+        }
+
+        &:hover .delete-user-btn {
+          opacity: 1;
+        }
+      }
+    }
+
+    .create-user-form {
+      padding: 15px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      h4 {
+        margin: 0 0 5px 0;
+        font-size: 0.9rem;
+      }
+
+      input,
+      select {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        font-size: 12px;
+        outline: none;
+      }
+
+      button {
+        background: #27ae60;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        &:hover {
+          background: darken(#27ae60, 10%);
+        }
+      }
+    }
+  }
+
+  // El área principal (donde va el tablero)
+  .main-content {
+    flex: 1;
+  }
+}
+
+// --- MODAL DE DETALLES Y COMENTARIOS ---
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+
+  .modal-content {
+    background: white;
+    width: 600px;
+    max-width: 90%;
+    height: 80vh; // Altura fija para que el chat tenga scroll
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #333;
+      }
+      button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+      }
+    }
+
+    .modal-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      background: #fff;
+
+      .task-details-section {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px dashed #ddd;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      .comments-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        overflow-y: auto;
+
+        h4 {
+          margin: 0 0 10px 0;
+          color: #888;
+          font-size: 0.9rem;
+          text-transform: uppercase;
+        }
+
+        .comment-bubble {
+          display: flex;
+          gap: 10px;
+
+          .avatar-circle {
+            width: 32px;
+            height: 32px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+          }
+
+          .bubble-content {
+            background: #f1f2f6;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-top-left-radius: 0;
+            max-width: 80%;
+            font-size: 14px;
+
+            .author-name {
+              font-weight: 700;
+              font-size: 12px;
+              color: #2c3e50;
+              margin-bottom: 4px;
+              display: block;
+            }
+          }
+
+          // Estilo diferente si soy YO quien comenta (Admin o User actual)
+          &.mine {
+            flex-direction: row-reverse;
+            .bubble-content {
+              background: #d1ecf1;
+              color: #0c5460;
+              border-radius: 12px;
+              border-top-right-radius: 0;
+            }
+            .avatar-circle {
+              background: #16a085;
+            }
+          }
+        }
+      }
+    }
+
+    .modal-footer {
+      padding: 15px;
+      border-top: 1px solid #eee;
+      background: #f8f9fa;
+      display: flex;
+      gap: 10px;
+
+      input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+        &:focus {
+          border-color: #3498db;
+        }
+      }
+
+      button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 0 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        &:hover {
+          background: darken(#3498db, 10%);
+        }
+      }
+    }
+  }
+}
+
+// Etiquetas (Pills)
+.tag-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+// Contenedor de selección de etiquetas en edición
+.tag-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 10px 0;
+
+  .tag-option {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.5;
+    transition: all 0.2s;
+
+    &.selected {
+      opacity: 1;
+      border-color: #333;
+      transform: scale(1.05);
+    }
+  }
+}
+
+// Checklist en el Modal
+.checklist-section {
+  margin-top: 20px;
+
+  h4 {
+    margin: 0 0 10px 0;
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  // Barra de progreso general
+  .progress-bar-container {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 15px;
+
+    .progress-fill {
+      height: 100%;
+      background: #2ecc71; // Verde éxito
+      transition: width 0.3s ease;
+    }
+  }
+
+  // Items de la lista
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+
+    input[type='checkbox'] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #2ecc71;
+    }
+
+    .item-text {
+      flex: 1;
+      font-size: 14px;
+      &.completed {
+        text-decoration: line-through;
+        color: #aaa;
+      }
+    }
+
+    .delete-item-btn {
+      color: #ff7675;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover .delete-item-btn {
+      opacity: 1;
+    }
+  }
+
+  .add-item-form {
+    display: flex;
+    margin-top: 10px;
+    gap: 10px;
+
+    input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    button {
+      background: #ecf0f1;
+      border: 1px solid #bdc3c7;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover {
+        background: #bdc3c7;
+      }
+    }
+  }
+}
+
+// Indicador pequeño en la Tarjeta (TaskCard)
+.subtasks-indicator {
+  font-size: 11px;
+  color: #666;
+  background: #f0f2f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
