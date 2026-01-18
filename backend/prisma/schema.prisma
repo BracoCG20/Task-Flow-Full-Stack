@@ -53,8 +53,18 @@ model Task {
   column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
   comments  Comment[]
   activities ActivityLog[]
+  attachments Attachment[]
 }
 
+model Attachment {
+  id        Int      @id @default(autoincrement())
+  filename  String   
+  path      String   
+  createdAt DateTime @default(now())
+  
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
 model ActivityLog {
   id        Int      @id @default(autoincrement())
   action    String   // Ej: "Movió la tarea a Done"
