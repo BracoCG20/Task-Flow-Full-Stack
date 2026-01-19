@@ -235,6 +235,49 @@ app.put(
 	},
 );
 
+// --- GESTIÓN DE COLUMNAS ---
+
+// 1. Crear Columna
+app.post("/boards/:boardId/columns", authenticateToken, async (req, res) => {
+	const { boardId } = req.params;
+	const { title } = req.body;
+
+	// Calculamos el orden para ponerla al final
+	const columnsCount = await prisma.column.count({
+		where: { boardId: Number(boardId) },
+	});
+
+	const newColumn = await prisma.column.create({
+		data: {
+			title,
+			boardId: Number(boardId),
+			order: columnsCount, // Va al final
+		},
+		include: { tasks: true }, // Devolvemos tasks vacío para evitar errores en frontend
+	});
+	res.json(newColumn);
+});
+
+// 2. Eliminar Columna
+app.delete("/columns/:id", authenticateToken, async (req, res) => {
+	try {
+		await prisma.column.delete({ where: { id: Number(req.params.id) } });
+		res.json({ success: true });
+	} catch (error) {
+		res.status(500).json({ error: "No se pudo eliminar la columna" });
+	}
+});
+
+// 3. Editar Título de Columna
+app.patch("/columns/:id", authenticateToken, async (req, res) => {
+	const { title } = req.body;
+	const updated = await prisma.column.update({
+		where: { id: Number(req.params.id) },
+		data: { title },
+	});
+	res.json(updated);
+});
+
 // --- RUTAS DEL TABLERO ---
 
 // Obtener Tableros

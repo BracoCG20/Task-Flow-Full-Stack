@@ -12,6 +12,7 @@ import { AdminSidebar } from "./components/AdminSidebar";
 import { TaskDetailModal } from "./components/TaskDetailModal";
 import { AnalyticsModal } from "./components/AnalyticsModal";
 import { ProfileModal } from "./components/ProfileModal";
+import { ColumnHeader } from "./components/ColumnHeader";
 
 // --- CONFIGURACIÓN DE AXIOS ---
 axios.interceptors.request.use((config) => {
@@ -109,9 +110,41 @@ const TaskFlow = ({ onLogout, targetUserId }: TaskFlowProps) => {
 		refetchOnWindowFocus: false,
 	});
 
+	// 1. MUTACIÓN CREAR COLUMNA
+	const addColumn = useMutation({
+		mutationFn: (title: string) =>
+			axios.post(`http://localhost:3000/boards/${boards[0].id}/columns`, {
+				title,
+			}),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["boards"] });
+			toast.success("Lista creada");
+		},
+	});
+
+	// 2. MUTACIÓN BORRAR COLUMNA
+	const deleteColumn = useMutation({
+		mutationFn: (id: number) =>
+			axios.delete(`http://localhost:3000/columns/${id}`),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["boards"] }),
+	});
+
+	// 3. MUTACIÓN EDITAR TÍTULO
+	const updateColumnTitle = useMutation({
+		mutationFn: (data: { id: number; title: string }) =>
+			axios.patch(`http://localhost:3000/columns/${data.id}`, {
+				title: data.title,
+			}),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["boards"] }),
+	});
+
+	// Función para manejar nueva columna
+	const handleNewColumn = () => {
+		const title = prompt("Nombre de la nueva lista:");
+		if (title) addColumn.mutate(title);
+	};
+
 	// --- SOLUCIÓN DE DATOS EN VIVO ---
-	// Calculamos la versión más reciente de la tarea seleccionada basándonos en 'boards'
-	// Esto permite que el modal se actualice automáticamente cuando cambia algo (ej: checklist)
 	const activeTask =
 		selectedTask && boards
 			? boards[0]?.columns
@@ -192,7 +225,7 @@ const TaskFlow = ({ onLogout, targetUserId }: TaskFlowProps) => {
 					</button>
 				</div>
 			),
-			{ duration: 5000, position: "top-center" }
+			{ duration: 5000, position: "top-center" },
 		);
 	};
 
@@ -347,21 +380,30 @@ const TaskFlow = ({ onLogout, targetUserId }: TaskFlowProps) => {
 												ref={provided.innerRef}
 												{...provided.draggableProps}
 											>
+												{/* --- ZONA DE ARRASTRE DE LA COLUMNA --- */}
 												<div
+													{...provided.dragHandleProps}
 													style={{
+														cursor: "grab",
+														marginBottom: 5,
 														display: "flex",
-														justifyContent: "space-between",
-														marginBottom: 10,
+														justifyContent: "center",
 													}}
 												>
-													<h3>{col.title}</h3>
-													<div
-														{...provided.dragHandleProps}
-														style={{ cursor: "grab", color: "#999" }}
-													>
-														<GripHorizontal size={20} />
-													</div>
+													<GripHorizontal size={20} color='#ccc' />
 												</div>
+
+												{/* --- COMPONENTE HEADER CON EDICIÓN --- */}
+												<ColumnHeader
+													id={col.id}
+													title={col.title}
+													taskCount={col.tasks.length}
+													onDelete={(id) => deleteColumn.mutate(id)}
+													onUpdateTitle={(id, t) =>
+														updateColumnTitle.mutate({ id, title: t })
+													}
+												/>
+
 												<Droppable
 													droppableId={String(col.id)}
 													type='TASK'
@@ -407,6 +449,28 @@ const TaskFlow = ({ onLogout, targetUserId }: TaskFlowProps) => {
 									</Draggable>
 								))}
 								{provided.placeholder}
+
+								{/* --- BOTÓN PARA AÑADIR NUEVA COLUMNA --- */}
+								{!isFiltering && (
+									<div style={{ minWidth: 280, marginTop: 10 }}>
+										<button
+											onClick={handleNewColumn}
+											style={{
+												width: "100%",
+												padding: 15,
+												background: "rgba(255,255,255,0.5)",
+												border: "2px dashed #ccc",
+												borderRadius: 8,
+												cursor: "pointer",
+												color: "#666",
+												fontWeight: "bold",
+												fontSize: "1rem",
+											}}
+										>
+											+ Añadir otra lista
+										</button>
+									</div>
+								)}
 							</div>
 						)}
 					</Droppable>
@@ -433,7 +497,7 @@ const TaskFlow = ({ onLogout, targetUserId }: TaskFlowProps) => {
 // --- COMPONENTE PRINCIPAL (APP) ---
 function App() {
 	const [token, setToken] = useState<string | null>(
-		localStorage.getItem("token")
+		localStorage.getItem("token"),
 	);
 	const role = localStorage.getItem("user_role");
 	const myId = Number(localStorage.getItem("user_id"));
