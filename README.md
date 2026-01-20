@@ -1,5 +1,7 @@
 # 📋 TaskFlow Pro - Enterprise Full Stack Kanban App
 
+[![CI/CD Pipeline](https://github.com/BracoCG20/Task-Flow-Full-Stack/actions/workflows/ci.yml/badge.svg)](https://github.com/BracoCG20/Task-Flow-Full-Stack/actions/workflows/ci.yml)
+
 TaskFlow Pro es una aplicación de gestión de proyectos y tareas estilo Kanban (similar a Jira o Trello) construida con tecnologías modernas y escalables. Ha evolucionado de un simple tablero a una **Suite Empresarial Completa** que incluye roles de usuario, auditoría, análisis de datos y colaboración en tiempo real.
 
 ## 🚀 Tecnologías Utilizadas
