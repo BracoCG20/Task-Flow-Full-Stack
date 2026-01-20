@@ -12,12 +12,7 @@ interface Props {
 	}) => void;
 }
 
-export const CreateTaskModal = ({
-	isOpen,
-	onClose,
-	columnId,
-	onSubmit,
-}: Props) => {
+export const CreateTaskModal = ({ isOpen, onClose, onSubmit }: Props) => {
 	const [content, setContent] = useState("");
 	const [priority, setPriority] = useState("low");
 	const [dueDate, setDueDate] = useState("");

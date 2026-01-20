@@ -18,7 +18,6 @@ interface Props {
 export const TaskDetailModal = ({ isOpen, onClose, task }: Props) => {
 	const [newComment, setNewComment] = useState("");
 	const queryClient = useQueryClient();
-	const myName = localStorage.getItem("user_name");
 
 	// 1. QUERY: Cargar Comentarios
 	const { data: comments, isLoading: loadingComments } = useQuery({
