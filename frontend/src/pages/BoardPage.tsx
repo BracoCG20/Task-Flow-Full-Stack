@@ -234,14 +234,7 @@ export const BoardPage = ({ onLogout, targetUserId }: Props) => {
 	return (
 		<div className='app-container' style={{ height: "100%" }}>
 			{/* HEADER */}
-			<header
-				className='app-header'
-				style={{
-					margin: 0,
-					borderRadius: 10,
-					borderBottom: "1px solid var(--border-color)",
-				}}
-			>
+			<header className='app-header'>
 				<div className='header-left'>
 					<h1>
 						📋 {targetUserId ? `Tablero (ID: ${targetUserId})` : "Mi Tablero"}

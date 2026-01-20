@@ -129,7 +129,7 @@ export const CreateTaskModal = ({
 								className='edit-select'
 								value={dueDate}
 								onChange={(e) => setDueDate(e.target.value)}
-								style={{ width: "100%", padding: "8px" }}
+								style={{ width: "-webkit-fill-available", padding: "8px" }}
 							/>
 						</div>
 					</div>

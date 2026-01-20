@@ -134,10 +134,16 @@ export const ProfileModal = ({
 						onClick={handleSubmit}
 						disabled={updateProfile.isPending}
 						style={{
-							width: "100%",
+							width: "-webkit-fill-available",
 							display: "flex",
 							justifyContent: "center",
 							gap: 10,
+							border: "none",
+							borderRadius: 10,
+							padding: 10,
+							margin: 10,
+							background: "#4a90e2",
+							color: "#fff",
 						}}
 					>
 						<Save size={18} /> Guardar Cambios
