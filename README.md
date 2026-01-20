@@ -86,35 +86,43 @@ Clona el repositorio e instala las dependencias (Frontend y Backend):
 ```bash
 # Instalar dependencias en raíz, backend y frontend
 npm run install:all
+```
+
 (Si no tienes el script install:all, entra a cada carpeta cd frontend && npm i y cd backend && npm i).
 
-3. Base de Datos
+### 3. Base de Datos
+
 Crea un archivo .env en la carpeta backend con tus credenciales:
 
-Fragmento de código
+```bash
+# Fragmento de código
 
 DATABASE_URL="postgresql://tu_usuario:tu_password@localhost:5432/taskflow?schema=public"
 JWT_SECRET="tu_clave_secreta_super_segura"
-Ejecuta las migraciones para crear las tablas en PostgreSQL:
 
-Bash
+```
 
+```Bash
+# Ejecuta las migraciones para crear las tablas en PostgreSQL:
 cd backend
 npx prisma generate
-npx prisma db push
-4. Crear el Primer Administrador 👑
-Como el registro público está desactivado por seguridad, debes inyectar el primer admin:
+npx prisma db push 4. Crear el Primer Administrador 👑
+```
 
-Bash
+```Bash
+# Como el registro público está desactivado por seguridad, debes inyectar el primer admin:
 
 # Estando en la carpeta backend
+
 npx ts-node seedAdmin.ts
 Credenciales por defecto: admin@empresa.com / admin123
+```
 
-5. ¡Arrancar la App! 🚀
+### 5. ¡Arrancar la App! 🚀
+
 Desde la raíz del proyecto:
 
-Bash
+```Bash
 
 npm run dev
 Esto abrirá:
@@ -122,26 +130,32 @@ Esto abrirá:
 Frontend: http://localhost:5173
 
 Backend: http://localhost:3000
-
-📂 Estructura del Proyecto
-/
-├── package.json          # Scripts globales
-├── frontend/             # Cliente React (Vite)
-│   ├── src/
-│   │   ├── components/   # UI: TaskCard, Modals, AdminSidebar, Charts
-│   │   ├── styles.scss   # Estilos SASS
-│   │   └── App.tsx       # Router y Lógica Principal
-├── backend/              # API Express
-│   ├── prisma/           # Schema.prisma (Modelos DB)
-│   ├── uploads/          # Almacenamiento de archivos adjuntos
-│   └── src/
-│       └── index.ts      # Endpoints y Lógica de Negocio
-🔒 Seguridad Implementada
-Middleware authenticateToken: Valida que el request tenga un Token válido.
-
-Middleware requireAdmin: Protege rutas críticas (borrar usuarios, ver estadísticas).
-
-Aislamiento de Datos: Validaciones en backend para asegurar que un usuario normal solo modifique sus propios datos.
-
-Uploads Seguros: Renombrado automático de archivos adjuntos para evitar colisiones.
 ```
+
+### 📂 Estructura del Proyecto
+
+```
+/
+├── package.json # Scripts globales
+├── frontend/ # Cliente React (Vite)
+│ ├── src/
+│ │ ├── components/ # UI: TaskCard, Modals, AdminSidebar, Charts
+│ │ ├── styles.scss # Estilos SASS
+│ │ └── App.tsx # Router y Lógica Principal
+├── backend/ # API Express
+│ ├── prisma/ # Schema.prisma (Modelos DB)
+│ ├── uploads/ # Almacenamiento de archivos adjuntos
+│ └── src/
+│ └── index.ts # Endpoints y Lógica de Negocio
+
+```
+
+### 🔒 Seguridad Implementada
+
+- **Middleware authenticateToken:** Valida que el request tenga un Token válido.
+
+- **Middleware requireAdmin:** Protege rutas críticas (borrar usuarios, ver estadísticas).
+
+- **Aislamiento de Datos:** Validaciones en backend para asegurar que un usuario normal solo modifique sus propios datos.
+
+- **Uploads Seguros:** Renombrado automático de archivos adjuntos para evitar colisiones.
