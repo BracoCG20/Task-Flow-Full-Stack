@@ -48,7 +48,7 @@ export const TagManager = ({ taskId, activeTagIds = [] }: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['boards'] });
     },
-    onError: (err) => {
+    onError: () => {
       setLocalSelectedIds(activeTagIds);
       toast.error('Error al guardar etiquetas');
     },
