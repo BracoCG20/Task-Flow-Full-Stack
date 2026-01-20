@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import api from "../lib/api"; // <--- Importar api
 import { Paperclip, Trash2, FileText, Image as ImageIcon } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -19,18 +19,18 @@ export const AttachmentManager = ({ taskId, attachments }: Props) => {
 	const queryClient = useQueryClient();
 	const [isUploading, setIsUploading] = useState(false);
 
-	// Subir Archivo
+	// URL Base para los enlaces de descarga
+	const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 	const uploadMutation = useMutation({
 		mutationFn: (file: File) => {
 			const formData = new FormData();
-			formData.append("file", file); // 'file' debe coincidir con upload.single('file') del backend
-			return axios.post(
-				`http://localhost:3000/tasks/${taskId}/attachments`,
-				formData,
-				{
-					headers: { "Content-Type": "multipart/form-data" },
-				},
-			);
+			formData.append("file", file);
+			// api.post maneja automáticamente el Content-Type para FormData en la mayoría de casos,
+			// pero forzarlo no hace daño.
+			return api.post(`/tasks/${taskId}/attachments`, formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
 		},
 		onSuccess: () => {
 			toast.success("Archivo subido");
@@ -43,10 +43,8 @@ export const AttachmentManager = ({ taskId, attachments }: Props) => {
 		},
 	});
 
-	// Borrar Archivo
 	const deleteMutation = useMutation({
-		mutationFn: (id: number) =>
-			axios.delete(`http://localhost:3000/attachments/${id}`),
+		mutationFn: (id: number) => api.delete(`/attachments/${id}`),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["boards"] });
 			toast.success("Archivo eliminado");
@@ -81,7 +79,6 @@ export const AttachmentManager = ({ taskId, attachments }: Props) => {
 				<Paperclip size={14} /> Adjuntos
 			</h4>
 
-			{/* Lista de Archivos */}
 			<div
 				style={{
 					display: "flex",
@@ -104,7 +101,7 @@ export const AttachmentManager = ({ taskId, attachments }: Props) => {
 						}}
 					>
 						<a
-							href={`http://localhost:3000/${file.path}`} // URL para ver/descargar
+							href={`${BASE_URL}/${file.path}`} // <--- Usamos la variable de entorno para el link
 							target='_blank'
 							rel='noopener noreferrer'
 							style={{
@@ -149,7 +146,6 @@ export const AttachmentManager = ({ taskId, attachments }: Props) => {
 				)}
 			</div>
 
-			{/* Botón Subir (Input oculto estilizado) */}
 			<label
 				style={{
 					display: "inline-flex",
