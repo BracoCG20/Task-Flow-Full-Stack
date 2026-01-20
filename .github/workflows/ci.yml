@@ -1,0 +1,68 @@
+name: CI/CD Pipeline
+
+# ¿Cuándo se ejecuta esto?
+on:
+  push:
+    branches: ["main"] # Al hacer push a la rama principal
+  pull_request:
+    branches: ["main"] # Al abrir un Pull Request
+
+jobs:
+  # --- TRABAJO 1: VERIFICAR BACKEND ---
+  backend-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend # Todas las órdenes se ejecutan dentro de /backend
+
+    steps:
+      - name: 📥 Descargar código (Checkout)
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: 📦 Instalar dependencias
+        run: npm ci # 'ci' es más rápido y estricto que 'install' para entornos limpios
+
+      - name: 🗄️ Generar cliente de Prisma
+        run: npx prisma generate
+
+      # (Opcional) Si tienes scripts de linting configurados:
+      # - name: 🧹 Linting (Calidad de código)
+      #   run: npm run lint
+
+      - name: 🏗️ Construir (Build & Type Check)
+        run: npm run build
+
+  # --- TRABAJO 2: VERIFICAR FRONTEND ---
+  frontend-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: 📥 Descargar código
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦 Instalar dependencias
+        run: npm ci
+
+      # (Opcional) Linting
+      # - name: 🧹 Linting
+      #   run: npm run lint
+
+      - name: 🏗️ Construir (Build)
+        run: npm run build
