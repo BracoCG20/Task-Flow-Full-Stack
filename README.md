@@ -18,7 +18,7 @@ TaskFlow Pro es una aplicación de gestión de proyectos y tareas estilo Kanban 
 - **React Hot Toast:** Notificaciones flotantes elegantes.
 - **Lucide React:** Iconografía moderna.
 
-### Backend (Servidor)
+### Backend (Servidor) --
 
 - **Node.js + Express:** Servidor REST API.
 - **TypeScript:** Seguridad de tipos en el servidor.
