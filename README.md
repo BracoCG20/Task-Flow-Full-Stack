@@ -6,7 +6,7 @@ TaskFlow Pro es una aplicación de gestión de proyectos y tareas estilo Kanban 
 
 ## 🚀 Tecnologías Utilizadas
 
-### Frontend (Cliente)
+### Frontend (Cliente) -- 
 
 - **React + Vite:** Para una interfaz rápida y reactiva.
 - **TypeScript:** Para tipado estático y código robusto.
